@@ -1,0 +1,92 @@
+import java.util.*;
+ 
+public class Guess{
+    //declaring all my variables
+    //okay not all, but most of them. Convenient for adding in different methods.
+    public final static Scanner input = new Scanner(System.in);
+    public final static Random rand = new Random();
+    public final static int MAX_SECRET = 100;
+    public static int maxGuesses = 0; static int totalGuesses = 0; static int totalGames = 0;
+    public static double averageGuesses = 0;
+    public static void main(String[]args){
+        instructions();
+        boolean playing = true;
+        boolean validAnswer = false;
+        while (playing == true){
+            //counts guesses, adds 1 to game count
+            totalGuesses += game();
+            totalGames++;
+            //this block validates inputs and repeats the game
+            System.out.println("Do you want to play again? ");
+            String testString = input.next();
+            while (validAnswer == false){
+                if (testString.charAt(0) == 'n' || testString.charAt(0) == 'N'){
+                    playing = false;
+                    validAnswer = true;
+                } else if (testString.charAt(0) == 'y' || testString.charAt(0) == 'Y'){
+                    validAnswer = true;
+                } else {
+                    System.out.println("Do you want to play again? ");
+                    testString = input.next();
+                }
+            }
+            System.out.println();
+            validAnswer = false;
+        }
+        results();
+    }
+    public static void instructions(){
+        //instructions, eh, simple enough
+        System.out.println("This program allows you to play a guessing game.");
+        System.out.println("I will think of a number between 1 and " + MAX_SECRET);
+        System.out.println("and will allow you to guess until you get it.");
+        System.out.println("For each guess, I will tell you whether the");
+        System.out.println("right answer is higher or lower than your guess.");
+        System.out.println();
+    }
+    public static int game(){
+        int secret = rand.nextInt(MAX_SECRET) + 1;
+        int guess = 0;
+        System.out.println("I'm thinking of a number...");
+        int counter = 1;
+        //this little loop validates the inputs. Extra credit? idk.
+        System.out.print("Your guess? ");
+        while (!input.hasNextInt()){
+            input.next();
+            System.out.print("Your guess? ");
+        }
+        guess = input.nextInt();
+        while (guess != secret){
+            if (secret > guess){
+                System.out.println("higher");
+            } else {
+                System.out.println("lower");
+            }
+            System.out.print("Your guess? ");
+            while (!input.hasNextInt()){
+                input.next();
+                System.out.print("Your guess? ");
+            }
+            guess = input.nextInt();
+            counter++;
+        }
+        System.out.printf("You got it right in %d guesses\n", counter);
+        System.out.println();
+        maxGuesses = Math.max(maxGuesses, counter);
+        return counter;
+    }
+    public static void results(){
+        averageGuesses = (double) totalGuesses / totalGames;
+        System.out.println("Overall results:");
+        System.out.printf("\ttotal games   = %d", totalGames);
+        System.out.println();
+        System.out.printf("\ttotal guesses = %d", totalGuesses);
+        System.out.println();
+        //this line is what confused me. Her example had 15 decimal places.
+        //do we do that too?
+        //this is also why I did printf on all of these lines. Lines up nicer in code, too.
+        System.out.printf("\tguesses/game  = %.15f", averageGuesses);
+        System.out.println();
+        System.out.printf("\tmax guesses   = %d", maxGuesses);
+    }
+}
